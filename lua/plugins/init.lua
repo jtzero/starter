@@ -468,8 +468,8 @@ return {
   --Plug 'szymonmaszke/vimpyter'
 
   -- Using more plugin specs like cmd etc
-  { "leafOfTree/vim-project", lazy = false },
-  { "nvim-telescope/telescope-project.nvim", lazy = false },
+  { "leafOfTree/vim-project", lazy = true },
+  { "nvim-telescope/telescope-project.nvim", lazy = true },
   {
     "Pocco81/TrueZen.nvim",
     cmd = { "TZAtaraxis", "TZMinimalist" },
@@ -522,7 +522,9 @@ return {
   },
   {
     "github/copilot.vim",
-    lazy = false,
+    lazy = true,
+    --event = { 'BufReadPre', 'BufNewFile' },
+    event = 'VimEnter',
     init = function(_plugin)
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_assume_mapped = true
