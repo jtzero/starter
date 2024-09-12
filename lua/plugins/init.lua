@@ -347,8 +347,8 @@ return {
     "dense-analysis/ale",
     lazy = false,
     keys = {
-      {"<C-L>", "<Plug>(ale_fix)", desc = "Runs the fixers in ale", noremap = true},
-      --{"<C-L>", "<cmd>ALEFix<CR>", desc = "Runs the fixers in ale", noremap = true},
+      --{"<C-L>", "<Plug>(ale_fix)", desc = "Runs the fixers in ale", noremap = true},
+      {"<C-L>", "<cmd>ALEFix<CR>", desc = "Runs the fixers in ale", noremap = true},
       {"<M-B>", "<cmd>ALEGoToDefinition<CR>", desc = "Finds the definition", noremap = true},
     },
     config = function(_plugins)
@@ -369,26 +369,42 @@ return {
       vim.g["ale_python_auto_pipenv"] = 1
       vim.g["ale_python_auto_poetry"] = 1
 
-     -- local path = vim.fn.trim(vim.fn.system("poetry env info --path"))
-     -- if(path == "" or path == ".")
-     -- then
-     --   local version = vim.fn.trim(vim.fn.system("poetry env info | grep 'Python:' | tr -s ' ' | cut -d' ' -f2 | head -n 1"))
-     --   vim.fn.system('poetry env use ' .. version)
-     --   path = vim.fn.trim(vim.fn.system('poetry env info --path'))
-     -- end
+      if os.getenv("ALE_PYTHON_POETRY") == nil or os.getenv("ALE_PYTHON_POETRY") == "true"
+      then
+        local poetry_env_path = vim.fn.trim(vim.fn.system("poetry env info --path"))
+        if(poetry_env_path == "" or poetry_env_path == ".")
+        then
+          local version = vim.fn.trim(vim.fn.system("poetry env info | grep 'Python:' | tr -s ' ' | cut -d' ' -f2 | head -n 1"))
+          vim.fn.system('poetry env use ' .. version)
+          poetry_env_path = vim.fn.trim(vim.fn.system('poetry env info --path'))
+          vim.fn.setenv("VIRTUAL_ENV", poetry_env_path)
+        end
+      end
 
-     -- vim.fn.setenv("VIRTUAL_ENV", path)
-     -- vim.g["ale_python_pyright_config"] = {
-     --   venvPath = vim.fn.trim(vim.fn.system('poetry config virtualenvs.path')),
-     --   venv = vim.fs.basename(path)
-     -- }
-      local rubocop_path = vim.fn.trim(vim.fn.system("bundle show rubocop"))
-      if(rubocop_path ~= "")
+      -- vim.g["ale_python_pyright_config"] = {
+      --   venvPath = vim.fn.trim(vim.fn.system('poetry config virtualenvs.path')),
+      --   venv = vim.fs.basename(path)
+      -- }
+      if os.getenv("ALE_RUBY_BUNDLE_RUBOCOP") == nil
+      then
+        local rubocop_bundle_check = vim.fn.trim(vim.fn.system("bundle show rubocop"))
+        if(rubocop_bundle_check ~= "")
+        then
+          vim.g["ale_ruby_rubocop_executable"] = 'bundle'
+        end
+      elseif os.getenv("ALE_RUBY_BUNDLE_RUBOCOP") == "true"
       then
         vim.g["ale_ruby_rubocop_executable"] = 'bundle'
       end
-      local rails_path = vim.fn.trim(vim.fn.system("bundle show rails"))
-      if(rails_path ~= '')
+
+      if os.getenv("ALE_RUBY_BUNDLE_RAILS") == nil
+      then
+        local rails_bundle_check = vim.fn.trim(vim.fn.system("bundle show rails"))
+        if(rails_bundle_check ~= "")
+        then
+          vim.g["ale_ruby_debride_options"] = ' --rails ' .. (vim.g["ale_ruby_debride_options"] or '')
+        end
+      elseif os.getenv("ALE_RUBY_BUNDLE_RAILS") == "true"
       then
         vim.g["ale_ruby_debride_options"] = ' --rails ' .. (vim.g["ale_ruby_debride_options"] or '')
       end
@@ -420,8 +436,7 @@ return {
           --"syntax_tree", -- https://github.com/ruby-syntax-tree/syntax_tree#write -- this works in conjunction with rubocop only if listed first?
           --"prettier", -- is just syntax_tree? -- Apply prettier to a file.
           "rufo", -- see notion about formatting conflicts
-          --"rubocop",
-          "dynamic_rubocop",
+          "rubocop",
           --"sorbet", -- will replace constants I.E. SyntaxTree becamse SyntaxError, because
                       --it needs to be ran with bundle exec, but it cannot because then it
                       --would have to be added to the gemfile
