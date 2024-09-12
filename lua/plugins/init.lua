@@ -211,7 +211,7 @@ return {
         -- Open in the current working directory
         "<M-o>",
         function()
-          require("yazi").yazi(nil, vim.fn.expand('%:h'))
+          require("yazi").yazi(nil, vim.fn.expand("%:."))
         end,
         desc = "Open the file manager in current folder of the file" ,
       },
@@ -229,6 +229,11 @@ return {
     },
     opts = {
       open_for_directories = true,
+      open_file_function = function(chosen_file, config, state)
+        local openers = require("yazi.openers")
+        local rel_path_chosen_file = Path.relative_to(vim.fn.getcwd(), chosen_file)
+        openers.open_file(rel_path_chosen_file, config, state)
+      end,
     },
   },
   -- :NvCheatsheet print a cheatsheet
