@@ -105,6 +105,8 @@ return {
   { "windwp/nvim-autopairs", enabled = false }, -- auto createes closing paren bracket quote etc
   {
     "hrsh7th/nvim-cmp",
+    lazy = true,
+    event = "VimEnter",
     opts = function(_, opts)
       local cmp = require('cmp')
       opts.mapping["<CR>"] = cmp.mapping.confirm {
@@ -160,6 +162,7 @@ return {
   {
     'kevinhwang91/nvim-ufo',
     dependencies = { 'kevinhwang91/promise-async'},
+    lazy = true,
     event = "VimEnter", -- needed for folds to load in time and comments closed
 		keys = {
 			-- stylua: ignore start
@@ -237,7 +240,11 @@ return {
     },
   },
   -- :NvCheatsheet print a cheatsheet
-  { "folke/which-key.nvim", enabled = true },
+  { "folke/which-key.nvim",
+    enabled = true,
+    lazy = true,
+    event = "VimEnter",
+  },
   -- experiment for ranger replacement
   -- { "voldikss/vim-floaterm" }
   -- { "ptzz/lf.vim" }
@@ -427,7 +434,7 @@ return {
   {
     "maxmellon/vim-jsx-pretty",
     build = ":UpdateRemotePlugins",
-    ft = {'jsx'}
+    ft = 'jsx'
   },
   {
     "psf/black",
@@ -443,12 +450,14 @@ return {
   --{ "jvirtanen/vim-hcl", ft = "hcl" },
   { "hashivim/vim-terraform", ft = "terraform" },
   {
-    "vim-test/vim-test"
+    "vim-test/vim-test",
+    lazy = true,
   },
   -- ================ experimental
   {
     "mg979/vim-visual-multi",
-    lazy = false,
+    lazy = true,
+    event = 'VeryLazy',
     config = function(_plugin)
       --vim.g.VM_maps = {} -- vim.fn.get("g:", "VM_maps", {}) -- set mapping to nothing
     end
@@ -470,13 +479,6 @@ return {
   -- Using more plugin specs like cmd etc
   { "leafOfTree/vim-project", lazy = true },
   { "nvim-telescope/telescope-project.nvim", lazy = true },
-  {
-    "Pocco81/TrueZen.nvim",
-    cmd = { "TZAtaraxis", "TZMinimalist" },
-    config = function(_plugin)
-      require "custom.configs.truezen"
-    end,
-  },
   -- ================
   -- After installation and configuration, you will need to authenticate with Codeium.
   -- This can be done by running :Codeium Auth, copying the token from your browser
@@ -484,6 +486,7 @@ return {
   -- ctrl [ to loop through the suggestions
   {
     "Exafunction/codeium.nvim",
+    lazy = true,
     dependencies = {
         "nvim-lua/plenary.nvim",
         "hrsh7th/nvim-cmp",
