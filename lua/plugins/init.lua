@@ -66,41 +66,7 @@ return {
   -- 	},
   -- },
   -- nvchad/starter defaults end
-
-  -- mason.vim controls languages :Mason
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      auto_install = true,
-      highlight = {
-        enable = true,
-        use_languagetree = true,
-        disable = { "python" },
-      },
-      indent = {
-        enable = true,
-        disable = {"ruby"}
-      },
-    },
-  },
-  {
-    'jtzero/go-to-test-file.nvim',
-    lazy = false,
-    config = true,
-    opts = {
-      print_main_command_result = true
-    },
-    keys = {
-      {
-        '<M-T>',
-        '<cmd>FindTestOrSourceCodeFileWithFallback<CR>',
-        mode = { "n" },
-        desc = 'Opens a corresponding test file or source file if not found opens the test folder',
-      },
-    },
-  },
-  { "ntpeters/vim-better-whitespace" },
-  -- ================ NVChad overrides
+  -- nvchad overrides
   { "lukas-reineke/indent-blankline.nvim", enabled = false }, -- highlights blocks and provides vertical lines on indent
   { "windwp/nvim-autopairs", enabled = false }, -- auto createes closing paren bracket quote etc
   {
@@ -140,25 +106,24 @@ return {
       --buftypes = {}
     }
   },
---lua <<EOF
---
---require'nvim-treesitter.configs'.setup {
---  highlight = {
---    enable = true,
---    custom_captures = {
---     -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
---      ["foo.bar"] = "Identifier",
---    },
---    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
---    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
---    -- Using this option may slow down your editor, and you may see some duplicate highlights.
---    -- Instead of true it can also be a list of languages
---    additional_vim_regex_highlighting = false,
---  },
---}
---EOF
---
--- folding zo, zc for open and close
+  -- end nvchad overrides
+  {
+    'jtzero/go-to-test-file.nvim',
+    lazy = false,
+    config = true,
+    opts = {
+      print_main_command_result = true
+    },
+    keys = {
+      {
+        '<M-T>',
+        '<cmd>FindTestOrSourceCodeFileWithFallback<CR>',
+        mode = { "n" },
+        desc = 'Opens a corresponding test file or source file if not found opens the test folder',
+      },
+    },
+  },
+  -- folding zo, zc for open and close
   {
     'kevinhwang91/nvim-ufo',
     dependencies = { 'kevinhwang91/promise-async'},
@@ -245,21 +210,6 @@ return {
     lazy = true,
     event = "VimEnter",
   },
-  -- experiment for ranger replacement
-  -- { "voldikss/vim-floaterm" }
-  -- { "ptzz/lf.vim" }
-  -- { "nvim-neo-tree/neo-tree.vim" }
---  {
---    "rafaqz/ranger.vim",
---    lazy = false,
---    keys = {
---      { "<M-o>", "<cmd>RangerEdit<CR>", desc = "Ranger Dialog", noremap = true}
---    },
---    init = function(_plugin)
---      vim.g.ranger_map_keys = 0
---      vim.g.ranger_replace_netrw = 1 -- open ranger when vim open a directory
---    end
---  },
   { dir = "~/dev_setup/var/fzf", name = "fzf-source" },
   {
     "junegunn/fzf.vim",
@@ -274,7 +224,7 @@ return {
     }
   },
   -- `setl bufhidden=delete | buffer! #`
-  -- :bd closes all wondows by default, this overrides that
+  -- :bd closes all windows by default, this overrides that
   -- needed when closing ranger to autoclose Process exited 0
   {
     "rbgrouleff/bclose.vim",
@@ -285,32 +235,38 @@ return {
       vim.g.netrw_fastbrowse = 0
     end
   },
+  -- TODO dark theme switching
+  {
+  "f-person/auto-dark-mode.nvim",
+    enabled = false,
+    opts = {
+      update_interval = 1000,
+      set_dark_mode = function()
+        vim.api.nvim_set_option_value("background", "dark", {})
+        vim.cmd("colorscheme gruvbox")
+      end,
+      set_light_mode = function()
+        vim.api.nvim_set_option_value("background", "light", {})
+        vim.cmd("colorscheme gruvbox")
+      end,
+    },
+  },
   {
     "nvim-lualine/lualine.nvim",
     lazy = false,
     dependencies = {
       "nvim-tree/nvim-web-devicons",
       { "arcticicestudio/nord-vim", name = "nord", lazy = true },
-      { "dracula/vim", name = "dracula", lazy = false }, -- hi! link ALEErrorSign DiagnosticSignError -- Highlight
+      { "dracula/vim", name = "dracula", lazy = false },
       { "skbolton/embark", name = "embark", lazy = true },
     },
-    -- https://github.com/f-person/auto-dark-mode.nvim
     -- https://github.com/nvim-lualine/lualine.nvim/blob/master/THEMES.md
-    -- TODO change terminal theme
     -- https://github.com/neanias/everforest-nvim -- has a lualine theme
     opts = function(_plugin)
       local theme = os.getenv("THEME")
-      if theme == "auto" then
-        vim.fn.system("defaults read -g AppleInterfaceStyle")
-        if vim.v.shell_error == 1 then
-          theme="iceberg_light"
-        else --(it will say key pair doesn't exist)
-          theme="dracula"
-        end
-      else
+      if theme == "" or theme == nil then
         theme="dracula"
       end
-
       return {
         options = {
           icons_enabled = true,
@@ -328,6 +284,22 @@ return {
     end
   },
   -- ================= Language
+  -- mason.vim controls languages :Mason
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      auto_install = true,
+      highlight = {
+        enable = true,
+        use_languagetree = true,
+        disable = { "python" },
+      },
+      indent = {
+        enable = true,
+        disable = {"ruby"}
+      },
+    },
+  },
   {
     "wookayin/semshi",
     lazy = true,
@@ -337,6 +309,7 @@ return {
       vim.g["semshi#always_update_all_highlights"] = 1
     end
   },
+  { "ntpeters/vim-better-whitespace" },
   -- https://github.com/dense-analysis/ale/issues/4497
   --{
   --  "Shopify/ruby-lsp",
@@ -378,13 +351,13 @@ return {
           vim.fn.system('poetry env use ' .. version)
           poetry_env_path = vim.fn.trim(vim.fn.system('poetry env info --path'))
           vim.fn.setenv("VIRTUAL_ENV", poetry_env_path)
+          -- vim.g["ale_python_pyright_config"] = {
+          --   venvPath = vim.fn.trim(vim.fn.system('poetry config virtualenvs.path')),
+          --   venv = vim.fs.basename(path)
+          -- }
         end
       end
 
-      -- vim.g["ale_python_pyright_config"] = {
-      --   venvPath = vim.fn.trim(vim.fn.system('poetry config virtualenvs.path')),
-      --   venv = vim.fs.basename(path)
-      -- }
       if os.getenv("ALE_RUBY_BUNDLE_RUBOCOP") == nil
       then
         local rubocop_bundle_check = vim.fn.trim(vim.fn.system("bundle show rubocop"))
@@ -412,10 +385,16 @@ return {
       vim.g["ale_ruby_syntax_tree_options"] = "--print-width=100"
       vim.g["ale_ruby_rubocop_auto_correct_all"] = 0
 
+      vim.g["ale_sh_shellcheck_options"] = "-o check-extra-masked-returns" ..
+        " -o require-variable-braces" ..
+        " -o check-set-e-suppressed" ..
+        " -o deprecate-which" ..
+        " -o quote-safe-variables" ..
+        " -o require-variable-braces"
+
       --By default, all available tools for all supported languages will be run.
       vim.g["ale_linters"] = {
         proto = {'buf-lint'},
-        --javascript = {'eslint'},
       }
       -- the asterisk is the default case
       -- It works even if not explicitly added to a language
@@ -428,18 +407,18 @@ return {
         terraform = {"terraform", "trim_whitespace"},
         hcl = {"terraform", "trim_whitespace"},
         ruby = {
-          -- found this to be oobtuse in it's formatting
+          -- found this to be obtuse in it's formatting
           -- updating the print-width improved it
           -- https://github.com/ruby-syntax-tree/syntax_tree/issues/407
           -- nested iterators become a single line
           -- https://github.com/ruby-syntax-tree/syntax_tree/issues/406
           --"syntax_tree", -- https://github.com/ruby-syntax-tree/syntax_tree#write -- this works in conjunction with rubocop only if listed first?
-          --"prettier", -- is just syntax_tree? -- Apply prettier to a file.
+          --"prettier", -- is just syntax_tree?
           "rufo", -- see notion about formatting conflicts
           "rubocop",
-          --"sorbet", -- will replace constants I.E. SyntaxTree becamse SyntaxError, because
-                      --it needs to be ran with bundle exec, but it cannot because then it
-                      --would have to be added to the gemfile
+          --"sorbet", -- will replace constants I.E. SyntaxTree to SyntaxError, because
+                      -- it needs to be ran with bundle exec, but it cannot because then it
+                      -- would have to be added to the gemfile
           "standardrb",
         }
       }
@@ -464,11 +443,11 @@ return {
   -- seems to override tf ?
   --{ "jvirtanen/vim-hcl", ft = "hcl" },
   { "hashivim/vim-terraform", ft = "terraform" },
+  -- ================ experimental
   {
     "vim-test/vim-test",
     lazy = true,
   },
-  -- ================ experimental
   {
     "mg979/vim-visual-multi",
     lazy = true,
@@ -477,22 +456,13 @@ return {
       --vim.g.VM_maps = {} -- vim.fn.get("g:", "VM_maps", {}) -- set mapping to nothing
     end
   },
-  --Plug 'Konfekt/FastFold'
 
-  -- enable dbtext.vim/ disable this and see the error message on sql files
-  --Plugin 'ycm-core/YouCompleteMe'
-  --map <C-]> :YcmCompleter GoToImprecise<CR>
+  --{ "dstein64/vim-startuptime", lazy = false }
 
-  --Plugin 'codota/tabnine-vim'
-  --let g:ycm_path_to_python_interpreter = g:python3_host_prog
-
-  --Plug 'dstein64/vim-startuptime'
-
+  -- jupyter notebook WIP
   --pip install notedown
   --Plug 'szymonmaszke/vimpyter'
 
-  -- Using more plugin specs like cmd etc
-  { "leafOfTree/vim-project", lazy = true },
   { "nvim-telescope/telescope-project.nvim", lazy = true },
   -- ================
   -- After installation and configuration, you will need to authenticate with Codeium.
