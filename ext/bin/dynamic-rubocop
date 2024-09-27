@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+command="$(bundle show rubocop > /dev/null 2>&1 && printf 'bundle' || printf 'rubocop')"
+
+additional_args=""
+if [ "${command}" = "bundle" ]; then
+  additional_args="exec rubocop"
+fi
+
+exec ${command} ${additional_args} "${@}"

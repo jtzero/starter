@@ -358,17 +358,8 @@ return {
         end
       end
 
-      if os.getenv("ALE_RUBY_BUNDLE_RUBOCOP") == nil
-      then
-        local rubocop_bundle_check = vim.fn.trim(vim.fn.system("bundle show rubocop"))
-        if(rubocop_bundle_check ~= "")
-        then
-          vim.g["ale_ruby_rubocop_executable"] = 'bundle'
-        end
-      elseif os.getenv("ALE_RUBY_BUNDLE_RUBOCOP") == "true"
-      then
-        vim.g["ale_ruby_rubocop_executable"] = 'bundle'
-      end
+      local rtp_ext = Path.dirname(Path.script_path()) .. "/../ext"
+      vim.opt.runtimepath:append(',' .. rtp_ext)
 
       if os.getenv("ALE_RUBY_BUNDLE_RAILS") == nil
       then
@@ -395,6 +386,10 @@ return {
       --By default, all available tools for all supported languages will be run.
       vim.g["ale_linters"] = {
         proto = {'buf-lint'},
+
+      }
+      vim.g["ale_linters_ignore"] = {
+        ruby = {'rubocop'},
       }
       -- the asterisk is the default case
       -- It works even if not explicitly added to a language
@@ -415,7 +410,8 @@ return {
           --"syntax_tree", -- https://github.com/ruby-syntax-tree/syntax_tree#write -- this works in conjunction with rubocop only if listed first?
           --"prettier", -- is just syntax_tree?
           "rufo", -- see notion about formatting conflicts
-          "rubocop",
+          --"rubocop",
+          "dynamic-rubocop", -- dynamically determines if bundle is needed
           --"sorbet", -- will replace constants I.E. SyntaxTree to SyntaxError, because
                       -- it needs to be ran with bundle exec, but it cannot because then it
                       -- would have to be added to the gemfile
