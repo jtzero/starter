@@ -360,18 +360,7 @@ return {
 
       local rtp_ext = Path.dirname(Path.script_path()) .. "/../ext"
       vim.opt.runtimepath:append(',' .. rtp_ext)
-
-      if os.getenv("ALE_RUBY_BUNDLE_RAILS") == nil
-      then
-        local rails_bundle_check = vim.fn.trim(vim.fn.system("bundle show rails"))
-        if(rails_bundle_check ~= "")
-        then
-          vim.g["ale_ruby_debride_options"] = ' --rails ' .. (vim.g["ale_ruby_debride_options"] or '')
-        end
-      elseif os.getenv("ALE_RUBY_BUNDLE_RAILS") == "true"
-      then
-        vim.g["ale_ruby_debride_options"] = ' --rails ' .. (vim.g["ale_ruby_debride_options"] or '')
-      end
+      vim.cmd.execute("ale#fix#registry#Add('dynamic-rubocop', 'ale#fixers#dynamic_rubocop#Fix', ['ruby'], 'dynamic rubocop')")
 
       vim.g["ale_ruby_syntax_tree_options"] = "--print-width=100"
       vim.g["ale_ruby_rubocop_auto_correct_all"] = 0
@@ -388,8 +377,9 @@ return {
         proto = {'buf-lint'},
 
       }
+      vim.g["ale_ruby_sorbet_executable"] = '' -- ignoring isn;t working ???
       vim.g["ale_linters_ignore"] = {
-        ruby = {'rubocop'},
+        ruby = {'rubocop', 'debride', 'sorbet', 'srb'}, -- sorbet spams the messages
       }
       -- the asterisk is the default case
       -- It works even if not explicitly added to a language

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+command="$(bundle show debride > /dev/null 2>&1 && printf 'bundle' || printf 'debride')"
+
+additional_args=""
+if [ "${command}" = "bundle" ]; then
+  additional_args="exec rubocop"
+fi
+
+if bundle show rails > /dev/null 2>&1; then
+  additional_args="${additional_args} --rails "
+fi
+
+gemfile_path="$(bundle config gemfile| grep 'Set via' |cut -d':' -f2 | tr -d '\"' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+root_path="$(dirname "${gemfile_path}")"
+app_path="${root_path}/app"
+lib_path="${root_path}/lib"
+
+set -x
+if [ -d "${app_path}" ]; then
+  additional_args="${additional_args} ${app_path} "
+  add_focus="true"
+fi
+if [ -d "${lib_path}" ]; then
+  additional_args="${additional_args} ${lib_path} "
+  add_focus="true"
+fi
+
+if [ "${add_focus}" = "true" ]; then
+  additional_args="${additional_args} --focus "
+fi
+exec ${command} ${additional_args} "${@}"

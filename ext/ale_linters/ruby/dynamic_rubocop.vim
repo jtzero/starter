@@ -20,6 +20,7 @@ function! ale_linters#ruby#dynamic_rubocop#GetCommand(buffer) abort
     \   . ' --stdin %s'
 endfunction
 
+" TODO remove for original
 function! ale_linters#ruby#dynamic_rubocop#GetType(severity) abort
     if a:severity is? 'convention'
     \|| a:severity is? 'warning'
