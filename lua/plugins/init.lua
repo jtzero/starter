@@ -449,14 +449,29 @@ return {
   --pip install notedown
   --Plug 'szymonmaszke/vimpyter'
 
-  { "nvim-telescope/telescope-project.nvim", lazy = true },
-  -- ================
+  { "nvim-telescope/telescope-project.nvim", lazy = true},
+  --- AI
+  {
+    "supermaven-inc/supermaven-nvim",
+    lazy = false,
+    config = function()
+      require("supermaven-nvim").setup({
+        keymaps = {
+          accept_suggestion = "<C-f>",
+          clear_suggestion = "<C-g>",
+          accept_word = "<C-j>",
+        },
+      })
+    end,
+  },
+  -- ===============
   -- After installation and configuration, you will need to authenticate with Codeium.
   -- This can be done by running :Codeium Auth, copying the token from your browser
   -- and pasting it into API token request.
   -- ctrl [ to loop through the suggestions
   {
     "Exafunction/codeium.nvim",
+    enabled = false,
     lazy = true,
     dependencies = {
         "nvim-lua/plenary.nvim",
@@ -494,16 +509,16 @@ return {
       },
     },
   },
-  {
-    "github/copilot.vim",
-    lazy = true,
-    --event = { 'BufReadPre', 'BufNewFile' },
-    event = 'VimEnter',
-    init = function(_plugin)
-      vim.g.copilot_no_tab_map = true
-      vim.g.copilot_assume_mapped = true
-      vim.g.copilot_tab_fallback = ""
-      vim.api.nvim_set_keymap("i", "<C-f>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-    end
-  },
+  --{
+  --  "github/copilot.vim",
+  --  lazy = true,
+  --  --event = { 'BufReadPre', 'BufNewFile' },
+  --  event = 'VimEnter',
+  --  init = function(_plugin)
+  --    vim.g.copilot_no_tab_map = true
+  --    vim.g.copilot_assume_mapped = true
+  --    vim.g.copilot_tab_fallback = ""
+  --    vim.api.nvim_set_keymap("i", "<C-f>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+  --  end
+  --},
 }
