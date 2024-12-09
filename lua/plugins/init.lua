@@ -89,6 +89,7 @@ return {
   {
     "NvChad/ui",
     config = function()
+      require "nvchad"
       vim.opt.statusline=""
     end
   },
