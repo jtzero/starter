@@ -28,6 +28,11 @@ function! ale_linters#ruby#dynamic_debride#HandleOutput(buffer, lines) abort
         endif
 
         let l:elements = split(l:line)
+        " debride occasionally doesn;t fine a method name, so we'll just skip
+        " but does return a line number
+        if len(l:elements) <= 2
+            continue
+        endif
         let l:method_name = l:elements[0]
         let l:lnum = split(l:elements[1], ':')[1]
 

@@ -6,7 +6,7 @@ command="$(bundle show debride > /dev/null 2>&1 && printf 'bundle' || printf 'de
 
 additional_args=""
 if [ "${command}" = "bundle" ]; then
-  additional_args="exec rubocop"
+  additional_args="exec debride"
 fi
 
 if bundle show rails > /dev/null 2>&1; then
@@ -31,4 +31,5 @@ fi
 if [ "${add_focus}" = "true" ]; then
   additional_args="${additional_args} --focus "
 fi
+echo command: "${command} ${additional_args} "${@}""
 exec ${command} ${additional_args} "${@}"
