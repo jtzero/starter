@@ -452,36 +452,21 @@ return {
 
   { "nvim-telescope/telescope-project.nvim", lazy = true},
   --- AI
+  -- mavante cannot replace auto-suggestions because it is currently experimental
+  -- issues changing my email
   {
     "supermaven-inc/supermaven-nvim",
+    enabled = false,
     lazy = false,
     config = function()
       require("supermaven-nvim").setup({
         keymaps = {
           accept_suggestion = "<C-f>",
-          clear_suggestion = "<C-g>",
-          accept_word = "<C-j>",
+          --clear_suggestion = "<C-",
+          accept_word = "<C-g>",
         },
       })
     end,
-  },
-  -- ===============
-  -- After installation and configuration, you will need to authenticate with Codeium.
-  -- This can be done by running :Codeium Auth, copying the token from your browser
-  -- and pasting it into API token request.
-  -- ctrl [ to loop through the suggestions
-  {
-    "Exafunction/codeium.nvim",
-    enabled = false,
-    lazy = true,
-    dependencies = {
-        "nvim-lua/plenary.nvim",
-        "hrsh7th/nvim-cmp",
-    },
-    config = function()
-        require("codeium").setup({
-        })
-    end
   },
   -- can chat with ollama
   -- https://github.com/Robitx/gp.nvim
@@ -510,26 +495,22 @@ return {
       },
     },
   },
-  --{
-  --  "github/copilot.vim",
-  --  lazy = true,
-  --  --event = { 'BufReadPre', 'BufNewFile' },
-  --  event = 'VimEnter',
-  --  init = function(_plugin)
-  --    vim.g.copilot_no_tab_map = true
-  --    vim.g.copilot_assume_mapped = true
-  --    vim.g.copilot_tab_fallback = ""
-  --    vim.api.nvim_set_keymap("i", "<C-f>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-  --  end
-  --},
   {
     "yetone/avante.nvim",
-    enabled = false,
+    enabled = true,
     event = "VeryLazy",
-    lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
+      provider = "copilot",
+      --provider = "gemini",
       -- add any opts here
+      mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
+      -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
+      -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
+      -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
+      -- auto_suggestions in avante are experimental so it's off by default -- behavior.auto_suggestions
+      -- can use copilot.lua to provide the functionality directly. OIr supermaven, etc
+      --auto_suggestions_provider = ""
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
@@ -541,7 +522,34 @@ return {
       "MunifTanjim/nui.nvim",
       --- The below dependencies are optional,
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        "zbirenbaum/copilot.lua", -- for providers='copilot' -- improved over copilot.vim
+        enabled = true,
+        lazy = true,
+        cmd = "Copilot",
+        event = "InsertEnter",
+        -- this was for copilot.vim
+        --init = function(_plugin)
+        --  vim.g.copilot_no_tab_map = true
+        --  vim.g.copilot_assume_mapped = true
+        --  vim.g.copilot_tab_fallback = ""
+          --vim.api.nvim_set_keymap("i", "<C-f>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+        --end,
+        opts = {
+          suggestion = {
+            auto_trigger = true,
+            hide_during_completion = false,
+            -- debounce = 75, -- default
+            keymap = {
+              accept = '<C-f>',
+              accept_word = '<C-g>',
+              next = '<C-Right>',
+              previous = '<C-Left>',
+            },
+          },
+        },
+      },
+
       {
         -- support for image pasting
         "HakonHarnes/img-clip.nvim",
