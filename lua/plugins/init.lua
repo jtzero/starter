@@ -43,6 +43,17 @@ local my_ssh_config_found = io.open(os.getenv("HOME") .. "/.ssh/config", "r"):re
   -- nvchad/starter defaults
 return {
   {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      on_attach = function(buffer)
+        local gs = package.loaded.gitsigns
+        local map = vim.keymap.set
+        local opts = { buffer = buffer, noremap = true, silent = true, desc = "Gitsigns blame_line" }
+        map('n', '<leader>gb', function() gs.blame_line({ full = true }) end, opts)
+      end,
+    },
+  },
+  {
     "stevearc/conform.nvim",
     -- event = 'BufWritePre', -- uncomment for format on save
     enabled = false,
