@@ -1,10 +1,4 @@
-local filepath = debug.getinfo(1).source:match("@?(.*/)") .. 'secrets'
-if vim.fn.filereadable(filepath) == 1 then
-  local file = io.open(filepath, "rb") -- r read mode and b binary mode
-  local content = file:read "*a" -- *a or *all reads the whole file
-  GITLAB_TOKEN=content:gmatch('=(.+)')(1)
-  file:close()
-end
+secrets = require('secrets')
 
 -- old may not be needed anymore
 local enable_providers = {
@@ -463,47 +457,78 @@ return {
 
   { "nvim-telescope/telescope-project.nvim", lazy = true},
   --- AI
-  -- mavante cannot replace auto-suggestions because it is currently experimental
+  -- avante cannot replace auto-suggestions because it is currently experimental
   -- issues changing my email
+  -- how do I log this in ?
   {
     "supermaven-inc/supermaven-nvim",
-    enabled = false,
+    enabled = true,
     lazy = false,
+    cond = function()
+      return secrets.suggestion.name == 'supermaven'
+    end,
     config = function()
       require("supermaven-nvim").setup({
         keymaps = {
           accept_suggestion = "<C-f>",
-          --clear_suggestion = "<C-",
-          accept_word = "<C-g>",
+          clear_suggestion = "<C-z>",
+          accept_word = '<C-g>',
+          next = '<C-Right>',
+          previous = '<C-Left>',
         },
       })
     end,
   },
-  -- can chat with ollama
-  -- https://github.com/Robitx/gp.nvim
-  -- {
-  --  "robitx/gp.nvim",
-  --  config = function()
-  --      local conf = {
-            -- For customization, refer to Install > Configuration in the Documentation/Readme
-  --      }
-  --      require("gp").setup(conf)
-
-        -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
-  --  end,
-  --}
+  -- this has a lualine option
   {
-    'git@gitlab.com:gitlab-org/editor-extensions/gitlab.vim.git',
-    enabled = false,
+    'milanglacier/minuet-ai.nvim',
+    enabled = true,
+    lazy = true,
     event = { 'BufReadPre', 'BufNewFile' }, -- Activate when a file is created/opened
-    ft = { 'go', 'javascript', 'python', 'ruby' }, -- Activate when a supported filetype is open
+    --event = "InsertEnter", -- not sure why but above is better
     cond = function()
-      return GITLAB_TOKEN ~= nil and GITLAB_TOKEN ~= '' -- Only activate is token is present in environment variable (remove to use interactive workflow)
+      vim.fn.setenv('AVANTE_GEMINI_API_KEY', secrets.suggestion.key)
+      return secrets.suggestion.name == 'gemini'
     end,
-    opts = {
-      statusline = {
-        enabled = true, -- Hook into the builtin statusline to indicate the status of the GitLab Duo Code Suggestions integration
-      },
+    config = function()
+      require('minuet').setup {
+        provider = secrets.suggestion.name,
+        cmp = {
+          enable_auto_complete = false,
+        },
+        blink = {
+          enable_auto_complete = false,
+        },
+        virtualtext = {
+          auto_trigger_ft = { '*' },
+          keymap = {
+              -- accept whole completion
+              accept = '<C-f>',
+              -- accept one line
+              accept_line = '<C-g>',
+              -- accept n lines (prompts for number)
+              -- e.g. "A-z 2 CR" will accept 2 lines
+              accept_n_lines = '<A-z>',
+              -- Cycle to prev completion item, or manually invoke completion
+              prev = '<C-Left>',
+              -- Cycle to next completion item, or manually invoke completion
+              next = '<C-Right>',
+              dismiss = '<C-z>',
+          },
+        },
+        provider_options = {
+          gemini = {
+            stream = true,
+            api_key = function() return secrets.suggestion.key end,
+          }
+        }
+      }
+    end,
+    dependencies = {
+      { 'nvim-lua/plenary.nvim' },
+      -- optional, if you are using virtual-text frontend, nvim-cmp is not
+      -- required.
+      { 'Saghen/blink.cmp' },
     },
   },
   {
@@ -511,16 +536,18 @@ return {
     enabled = true,
     event = "VeryLazy",
     version = false, -- set this if you want to always pull the latest change
+    cond = function()
+      return secrets.chat.name == 'copilot' or secrets.chat.name == 'gemini'
+    end,
     opts = {
-      provider = "copilot",
-      --provider = "gemini",
+      provider = secrets.chat.name,
       -- add any opts here
       mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
       -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
       -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
       -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
       -- auto_suggestions in avante are experimental so it's off by default -- behavior.auto_suggestions
-      -- can use copilot.lua to provide the functionality directly. OIr supermaven, etc
+      -- can use copilot.lua to provide the functionality directly. Or supermaven, etc
       --auto_suggestions_provider = ""
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
@@ -535,7 +562,7 @@ return {
       "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
       {
         "zbirenbaum/copilot.lua", -- for providers='copilot' -- improved over copilot.vim
-        enabled = true,
+        enabled = secrets.chat.name == 'copilot',
         lazy = true,
         cmd = "Copilot",
         event = "InsertEnter",

@@ -1,1 +1,2 @@
 lua/secrets*
+!lua/secrets*example
