@@ -324,6 +324,7 @@ return {
   --},
   {
     "dense-analysis/ale",
+    commit = "9a23ec1f60ec85f6afb70870a1978141b321fb3c",
     lazy = false,
     keys = {
       --{"<C-L>", "<Plug>(ale_fix)", desc = "Runs the fixers in ale", noremap = true},
@@ -347,6 +348,14 @@ return {
       --vim["g.ale_python_mypy_use_global"] = 1
       vim.g["ale_python_auto_pipenv"] = 1
       vim.g["ale_python_auto_poetry"] = 1
+
+      -- is this needed because of above ?
+      vim.g["ale_python_ruff_auto_pipenv"] = 1
+      vim.g["ale_python_ruff_auto_poetry"] = 1
+      vim.g["ale_python_ruff_auto_uv"] = 1
+      -- they added check but ale doesn;t use it or, doesn't use it on the version I ahve to pin
+      vim.g["ale_python_ruff_options"] = 'check'
+
 
       if os.getenv("ALE_PYTHON_POETRY") == nil or os.getenv("ALE_PYTHON_POETRY") == "true"
       then
@@ -394,7 +403,7 @@ return {
         javascript = {"eslint", "trim_whitespace", "prettier"},
         vue = {"prettier"},
         typescript = {"eslint", "tslint", "prettier"},
-        python = {"black", "reorder-python-imports"},
+        python = {"black", "reorder-python-imports", "ruff_format"},
         terraform = {"terraform", "trim_whitespace"},
         hcl = {"terraform", "trim_whitespace"},
         ruby = {

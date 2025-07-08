@@ -1,7 +1,7 @@
 {
   "LuaSnip": { "branch": "master", "commit": "eda5be8f0ce9816278671f0b578cdbb8b762c701" },
   "NvChad": { "branch": "v2.5", "commit": "f95da3325c2b0dca9468f52440225e351b074a3a" },
-  "ale": { "branch": "master", "commit": "9e49019a2683bff012d53f28546ff968075ea3b9" },
+  "ale": { "branch": "master", "commit": "9a23ec1f60ec85f6afb70870a1978141b321fb3c" },
   "avante.nvim": { "branch": "main", "commit": "17a1f8395013ebe7b2d0510b3d99d8542243e0ca" },
   "base46": { "branch": "v3.0", "commit": "2dbb72f4ae6f78cb3adc60c2c3b69524f97c9cd6" },
   "bclose.vim": { "branch": "master", "commit": "99018b4a2dd18aea1cbd3aa23565b01a0f8c5b73" },
