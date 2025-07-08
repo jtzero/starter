@@ -348,12 +348,13 @@ return {
       --vim["g.ale_python_mypy_use_global"] = 1
       vim.g["ale_python_auto_pipenv"] = 1
       vim.g["ale_python_auto_poetry"] = 1
+      vim.g["ale_python_auto_uv"] = 1
 
       -- is this needed because of above ?
       vim.g["ale_python_ruff_auto_pipenv"] = 1
       vim.g["ale_python_ruff_auto_poetry"] = 1
       vim.g["ale_python_ruff_auto_uv"] = 1
-      -- they added check but ale doesn;t use it or, doesn't use it on the version I ahve to pin
+      -- they added check but ale doesn;t use it or, doesn't use it on the version I have to pinned, works for fixer as well
       vim.g["ale_python_ruff_options"] = 'check'
 
 
@@ -403,7 +404,7 @@ return {
         javascript = {"eslint", "trim_whitespace", "prettier"},
         vue = {"prettier"},
         typescript = {"eslint", "tslint", "prettier"},
-        python = {"black", "reorder-python-imports", "ruff_format"},
+        python = {"black", "reorder-python-imports", "ruff_format", "ruff"},
         terraform = {"terraform", "trim_whitespace"},
         hcl = {"terraform", "trim_whitespace"},
         ruby = {
