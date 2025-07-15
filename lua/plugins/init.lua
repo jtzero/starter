@@ -229,18 +229,6 @@ return {
       { "<leader>o", "<cmd>GFiles<CR>", desc = "FZF Git Files", noremap = true }
     }
   },
-  -- `setl bufhidden=delete | buffer! #`
-  -- :bd closes all windows by default, this overrides that
-  -- needed when closing ranger to autoclose Process exited 0
-  {
-    "rbgrouleff/bclose.vim",
-    lazy = false,
-    config = function(_plugin)
-      vim.cmd("cnoreabbrev bd Bclose")
-      -- closing netrw; bclose might also help with this?
-      vim.g.netrw_fastbrowse = 0
-    end
-  },
   -- TODO dark theme switching
   {
   "f-person/auto-dark-mode.nvim",
