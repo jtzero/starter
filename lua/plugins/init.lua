@@ -312,7 +312,6 @@ return {
   --},
   {
     "dense-analysis/ale",
-    commit = "9a23ec1f60ec85f6afb70870a1978141b321fb3c",
     lazy = false,
     keys = {
       --{"<C-L>", "<Plug>(ale_fix)", desc = "Runs the fixers in ale", noremap = true},
@@ -323,9 +322,10 @@ return {
       vim.g["airline#extensions#ale#enabled"] = 1
       vim.g["ale_fix_on_save"] = 1
       vim.g["ale_use_neovim_diagnostics_api"] = 1
-      --vim.g["ale_set_signs"] = 1
+      --vim.g["ale_set_signs"] = 1 -- with this make the depcrecation go away?
 
       vim.g["ale_typescript_tslint_use_global"] = 0
+
       vim.g["ale_lua_luacheck_options"] = '--ignore 21/_.*'
 
 
@@ -379,6 +379,7 @@ return {
       --By default, all available tools for all supported languages will be run.
       vim.g["ale_linters"] = {
         proto = {'buf-lint'},
+        vue = {'volar', 'eslint'}, -- for some reason volar is not on by default
 
       }
       vim.g["ale_ruby_sorbet_executable"] = '' -- ignoring isn;t working ???
