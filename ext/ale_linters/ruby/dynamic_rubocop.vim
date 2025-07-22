@@ -3,6 +3,7 @@
 
 "call ale#Set('ruby_rubocop_executable', 'rubocop')
 "call ale#Set('ruby_rubocop_options', '')
+" ruby doesn;t have an *ale-options.ruby_auto_bundle* like python's *ale-options.python_auto_pipenv*
 
 let g:dynamic_rubocop_vim_path = expand('<sfile>:p')
 

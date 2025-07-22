@@ -3,6 +3,8 @@
 
 "call ale#Set('ruby_debride_executable', 'debride')
 "call ale#Set('ruby_debride_options', '')
+" ruby doesn;t have an *ale-options.ruby_auto_bundle* like python's *ale-options.python_auto_pipenv*
+" this debride also tries to add extra project files
 
 let g:dynamic_debride_vim_path = expand('<sfile>:p')
 
