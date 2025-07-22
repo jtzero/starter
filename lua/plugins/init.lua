@@ -589,7 +589,9 @@ return {
 
       {
         -- support for image pasting
+        -- seems to be hooked into the clipboard/cmd+P
         "HakonHarnes/img-clip.nvim",
+        enabled = false,
         event = "VeryLazy",
         opts = {
           -- recommended settings
