@@ -330,7 +330,7 @@ return {
   --  ft = 'ruby'
   --},
   {
-    "dense-analysis/ale",
+    "jtzero/ale",
     lazy = false,
     keys = {
       --{"<C-L>", "<Plug>(ale_fix)", desc = "Runs the fixers in ale", noremap = true},
@@ -340,8 +340,12 @@ return {
     config = function(_plugins)
       vim.g["airline#extensions#ale#enabled"] = 1
       vim.g["ale_fix_on_save"] = 1
+      -- If true or 1, disables ALE's built in error display.
+      -- and switches to using Neovim's built in diagnostics.
       vim.g["ale_use_neovim_diagnostics_api"] = 1
-      --vim.g["ale_set_signs"] = 1 -- with this make the depcrecation go away?
+      --When |g:ale_use_neovim_diagnostics_api| is `1`, the only other setting that
+      --will be respected for signs is |g:ale_sign_priority|.
+      --vim.g["ale_set_signs"] = 1 -- with this make the depcrecation go away? - nope
 
       vim.g["ale_typescript_tslint_use_global"] = 0
 
@@ -398,8 +402,7 @@ return {
       --By default, all available tools for all supported languages will be run.
       vim.g["ale_linters"] = {
         proto = {'buf-lint'},
-        vue = {'volar', 'eslint'}, -- for some reason volar is not on by default
-
+        vue = {'vtsls', 'eslint'}, -- for some reason volar is not on by default -- ale only works with v1
       }
       vim.g["ale_ruby_sorbet_executable"] = '' -- ignoring isn;t working ???
       vim.g["ale_linters_ignore"] = {
