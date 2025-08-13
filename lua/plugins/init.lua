@@ -1,4 +1,23 @@
+function merge(t1, t2)
+  for k, v in pairs(t2) do
+    if (type(v) == "table") and (type(t1[k] or false) == "table") then
+        merge(t1[k], t2[k])
+    else
+        t1[k] = v
+    end
+  end
+  return t1
+end
+
 secrets = require('secrets')
+
+vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
+
+local filepath = vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
+if filepath ~= "" then
+  local loader, error = loadfile(filepath)
+  loader()(vim)
+end
 
 -- old may not be needed anymore
 local enable_providers = {
