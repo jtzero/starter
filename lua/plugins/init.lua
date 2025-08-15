@@ -87,6 +87,11 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    keys = {
+      -- Already defined somewhere
+      --{ "<C-W>d", function() vim.diagnostic.open_float() end, desc = "Show line diagnostics", noremap = true, silent = false },
+      { "<C-W>s", function() vim.lsp.buf.signature_help() end, desc = "Show signature help", noremap = true },
+    },
     config = function()
       require "configs.lspconfig"
       if EditorConfig.filepath ~= nil then

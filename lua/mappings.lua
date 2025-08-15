@@ -18,12 +18,7 @@ map("i", "jk", "<ESC>")
 --    [">"] = { ">gv", "indent"},
 --  },
 --}
-
 map("v", ">", ">gv", { desc = "indent" })
 map("v", "<", "<gv", { desc = "unindent" })
 -- set by nvchad overriden by me
 map("n", "<C-c>", "", { desc = "disabled" }) -- disables default
-
--- default for nerdtree, rewritten to ';' by me not sure if something else now uses C-n ?
-map("n", "<C-n>", "", { desc = "toggle nvimtree" })
-map("n", "<C-;>", "<cmd> NvimTreeToggle <CR>", { desc = "toggle nvimtree" })
