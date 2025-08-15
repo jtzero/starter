@@ -389,7 +389,6 @@ return {
       vim.g["ale_python_ruff_auto_poetry"] = 1
       vim.g["ale_python_ruff_auto_uv"] = 1
       -- they added check but ale doesn;t use it or, doesn't use it on the version I have to pinned, works for fixer as well
-      vim.g["ale_python_ruff_options"] = 'check'
 
 
       if os.getenv("ALE_PYTHON_POETRY") == nil or os.getenv("ALE_PYTHON_POETRY") == "true"
