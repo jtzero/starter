@@ -9,26 +9,11 @@ function merge(t1, t2)
   return t1
 end
 
-secrets = require('secrets')
-
-vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
-
-local filepath = vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
-if filepath ~= "" then
-  local loader, error = loadfile(filepath)
-  loader()(vim)
-end
-
--- old may not be needed anymore
-local enable_providers = {
-  "python3_provider",
-  "node_provider",
-  "ruby_provider",
-  -- and so on
-}
-for _, plugin in pairs(enable_providers) do
-  vim.g["loaded_" .. plugin] = nil
-  vim.cmd("runtime " .. plugin)
+function concatTables(t1, t2)
+  for _, value in ipairs(t2) do
+    table.insert(t1, value)
+  end
+  return t1
 end
 
 Path = {}
@@ -48,6 +33,33 @@ Path.dirname = function(filepath)
     return ''
   end
   return vim.fn.fnamemodify(filepath, ":h")
+end
+
+secrets = require('secrets')
+
+vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
+EditorConfig = {
+  filepath = nil
+}
+local filepath = vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
+if filepath ~= "" then
+  EditorConfig.filepath = filepath
+  local loader, error = loadfile(filepath)
+  local config_func = loader()
+  if config_func ~= nil then
+    config_func(vim)
+  end
+end
+-- old may not be needed anymore
+local enable_providers = {
+  "python3_provider",
+  "node_provider",
+  "ruby_provider",
+  -- and so on
+}
+for _, plugin in pairs(enable_providers) do
+  vim.g["loaded_" .. plugin] = nil
+  vim.cmd("runtime " .. plugin)
 end
 
 local ssh_config_filepath = os.getenv("HOME") .. "/.ssh/config"
@@ -77,6 +89,12 @@ return {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
+      if EditorConfig.filepath ~= nil then
+        local async = require("plenary.async")
+        async.run(function()
+          vim.lsp.buf.add_workspace_folder(Path.dirname(EditorConfig.filepath))
+        end)
+      end
     end,
   },
 
