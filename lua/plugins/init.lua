@@ -43,12 +43,12 @@ EditorConfig = {
 }
 local filepath = vim.fn.findfile(".editorconfig.vim.lua", vim.fn.system("git rev-parse --show-toplevel"):gsub("\n", "") .. ";")
 if filepath ~= "" then
-  EditorConfig.filepath = filepath
   local loader, error = loadfile(filepath)
   local config_func = loader()
   if config_func ~= nil then
     config_func(vim)
   end
+  EditorConfig.filepath = filepath
 end
 -- old may not be needed anymore
 local enable_providers = {
