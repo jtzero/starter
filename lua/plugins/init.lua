@@ -582,17 +582,22 @@ return {
     cond = function()
       return secrets.chat.name == 'copilot' or secrets.chat.name == 'gemini'
     end,
-    opts = {
-      provider = secrets.chat.name,
-      -- add any opts here
-      mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
-      -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
-      -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
-      -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
-      -- auto_suggestions in avante are experimental so it's off by default -- behavior.auto_suggestions
-      -- can use copilot.lua to provide the functionality directly. Or supermaven, etc
-      --auto_suggestions_provider = ""
-    },
+    opts = function(_, opts)
+      if secrets.chat.name == 'gemini' then
+        vim.env.AVANTE_GEMINI_API_KEY = secrets.chat.key
+      end
+      return {
+        provider = secrets.chat.name,
+        -- add any opts here
+        mode = "agentic", -- The default mode for interaction. "agentic" uses tools to automatically generate code, "legacy" uses the old planning method to generate code.
+        -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
+        -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
+        -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
+        -- auto_suggestions in avante are experimental so it's off by default -- behavior.auto_suggestions
+        -- can use copilot.lua to provide the functionality directly. Or supermaven, etc
+        --auto_suggestions_provider = ""
+      }
+    end,
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
