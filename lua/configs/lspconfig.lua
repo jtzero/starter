@@ -9,6 +9,9 @@ local servers = { "html", "cssls" }
 if vim.bo.filetype == "astro" then
   table.insert(servers, "astro")
 end
+if vim.bo.filetype == "terraform" then
+  table.insert(servers, "terraformls")
+end
 if EditorConfig.lsp_servers ~= nil then
   concatTables(servers, EditorConfig.lsp_servers)
 end

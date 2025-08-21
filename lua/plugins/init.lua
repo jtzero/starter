@@ -429,6 +429,7 @@ return {
       vim.g["ale_ruby_sorbet_executable"] = '' -- ignoring isn;t working ???
       vim.g["ale_linters_ignore"] = {
         ruby = {'rubocop', 'debride', 'sorbet', 'srb'}, -- sorbet spams the messages
+        terraform = {'terraform_ls'},
       }
       -- the asterisk is the default case
       -- It works even if not explicitly added to a language
